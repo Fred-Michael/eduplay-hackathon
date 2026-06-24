@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="EduPlay.Views.LibraryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:EduPlay.ViewModels"
+    xmlns:models="clr-namespace:EduPlay.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:DataType="vm:LibraryPageViewModel"
+    Title="My Games">
+
+    <ContentPage.Behaviors>
+        <!-- Reload games every time the page appears -->
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding LoadGamesCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid>
+        <!-- Empty state -->
+        <VerticalStackLayout
+            IsVisible="{Binding IsEmpty}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="12"
+            Padding="40,0">
+            <Label Text="🎮" FontSize="48" HorizontalOptions="Center" />
+            <Label Text="No games yet"
+                   FontSize="18" FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center" />
+            <Label Text="Build your first game on the Build tab"
+                   FontSize="14" TextColor="#8888A8"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+
+        <!-- Games list -->
+        <CollectionView
+            ItemsSource="{Binding Games}"
+            IsVisible="{Binding IsEmpty, Converter={toolkit:InvertedBoolConverter}}"
+            Margin="16,12">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:GeneratedGame">
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LibraryPageViewModel}}, Path=OpenGameCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding MechanicName}"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="White" />
+
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="{Binding Prompt}"
+                                   FontSize="12" TextColor="#8888A8"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+
+                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="8" Margin="0,4,0,0">
+                                <Border BackgroundColor="#227C5CFF" Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 10" Padding="8,3">
+                                    <Label Text="{Binding Category}" FontSize="11" TextColor="#A48BFF" />
+                                </Border>
+                                <Border BackgroundColor="#22FFFFFF" Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 10" Padding="8,3">
+                                    <Label Text="{Binding AgeGroup, StringFormat='Ages {0}'}"
+                                           FontSize="11" TextColor="#8888A8" />
+                                </Border>
+                            </HorizontalStackLayout>
+
+                            <!-- Delete button -->
+                            <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
+                                    Text="🗑"
+                                    BackgroundColor="Transparent"
+                                    FontSize="18"
+                                    VerticalOptions="Center"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LibraryPageViewModel}}, Path=DeleteGameCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

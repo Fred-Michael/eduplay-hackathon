@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EduPlay.ViewModels;
 
-namespace EduPlay.Views
+namespace EduPlay.Views;
+public partial class BuildPage : ContentPage
 {
-    internal class BuildPage
+    public BuildPage(BuildPageViewModel viewModel)
     {
+        InitializeComponent();
+        BindingContext = viewModel;
     }
 }

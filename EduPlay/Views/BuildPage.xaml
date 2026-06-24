@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="EduPlay.Views.BuildPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:EduPlay.ViewModels"
+    xmlns:models="clr-namespace:EduPlay.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:DataType="vm:BuildPageViewModel"
+    Title="Build a Game">
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertBool" />
+    </ContentPage.Resources>
+
+    <!-- Generating overlay -->
+    <AbsoluteLayout>
+
+        <!-- Main scroll content -->
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    IsEnabled="{Binding IsNotGenerating}">
+            <VerticalStackLayout Padding="24,16,24,60" Spacing="0">
+
+                <!-- Heading -->
+                <Label Text="Build a Game" Style="{StaticResource HeadingStyle}" />
+                <Label Text="Describe what you want to teach — we'll build the game."
+                       Style="{StaticResource SubheadingStyle}" />
+
+                <!-- ── Category selector ── -->
+                <Label Text="What are you teaching?" Style="{StaticResource SectionLabelStyle}" />
+
+                <HorizontalStackLayout Spacing="10" Margin="0,0,0,28">
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="Categories" />
+                    </BindableLayout.ItemsSource>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:GameCategory">
+                            <Border Style="{StaticResource CardStyle}"
+                                    WidthRequest="108"
+                                    BackgroundColor="{Binding BackgroundColor}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}, Path=SelectCategoryCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                                    <Label Text="{Binding Emoji}" FontSize="24" HorizontalOptions="Center" />
+                                    <Label Text="{Binding Label}"
+                                           FontSize="11" FontAttributes="Bold"
+                                           TextColor="{Binding Color}"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding Description}"
+                                           FontSize="10"
+                                           TextColor="#8888A8"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+
+                <!-- ── Age group selector ── -->
+                <Label Text="Age group" Style="{StaticResource SectionLabelStyle}" />
+
+                <HorizontalStackLayout Spacing="10" Margin="0,0,0,28">
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="AgeGroups" />
+                    </BindableLayout.ItemsSource>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:AgeGroup">
+                            <Border Style="{StaticResource CardStyle}" WidthRequest="108">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}, Path=SelectAgeGroupCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="{Binding Label}"
+                                           FontSize="13" FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding SubLabel}"
+                                           FontSize="10" TextColor="#8888A8"
+                                           HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+
+                <!-- ── Prompt input ── -->
+                <Label Text="Describe your game" Style="{StaticResource SectionLabelStyle}" />
+
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                    <Editor
+                        Text="{Binding Prompt}"
+                        Placeholder="e.g. Spelling game using ocean animal words for Year 3..."
+                        PlaceholderColor="#8888A8"
+                        TextColor="White"
+                        FontSize="15"
+                        BackgroundColor="Transparent"
+                        HeightRequest="90"
+                        MaxLength="300" />
+                </Border>
+
+                <!-- ── Example prompts ── -->
+                <Label Text="Try an example:" FontSize="12" TextColor="#8888A8" Margin="0,0,0,8" />
+
+                <VerticalStackLayout Spacing="0">
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="ExamplePrompts" />
+                    </BindableLayout.ItemsSource>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border Style="{StaticResource ExampleChipStyle}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}, Path=UseExamplePromptCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Label Text="{Binding StringFormat='&quot;{0}&quot;'}"
+                                       FontSize="13"
+                                       TextColor="#8888A8"
+                                       FontAttributes="Italic" />
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Error message -->
+                <Border IsVisible="{Binding ErrorMessage, Converter={toolkit:IsNotNullConverter}}"
+                        BackgroundColor="#22FF4444"
+                        Stroke="#FF6666"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="12,10"
+                        Margin="0,12,0,0">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="#FF6666"
+                           FontSize="13" />
+                </Border>
+
+                <!-- ── Generate button ── -->
+                <Button
+                    Text="✨ Build My Game"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Command="{Binding GenerateCommand}"
+                    IsEnabled="{Binding IsNotGenerating}"
+                    Margin="0,16,0,0"
+                    Opacity="{Binding IsGenerating, Converter={toolkit:BoolToObjectConverter TrueObject='0.5', FalseObject='1.0'}}" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ── Generating overlay ── -->
+        <Grid
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#EE000000"
+            IsVisible="{Binding IsGenerating}">
+
+            <VerticalStackLayout
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Spacing="12"
+                Padding="40,0">
+
+                <Label Text="🎮" FontSize="56" HorizontalOptions="Center" Margin="0,0,0,8" />
+
+                <Label Text="Building your game..."
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+
+                <Label Text="{Binding ProgressLabel}"
+                       FontSize="14"
+                       TextColor="#AAAAAA"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+
+                <!-- Progress dots -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,16,0,0">
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{Binding ProgressStep, Converter={StaticResource StepToColorConverter}, ConverterParameter=1}" />
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{Binding ProgressStep, Converter={StaticResource StepToColorConverter}, ConverterParameter=2}" />
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{Binding ProgressStep, Converter={StaticResource StepToColorConverter}, ConverterParameter=3}" />
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{Binding ProgressStep, Converter={StaticResource StepToColorConverter}, ConverterParameter=4}" />
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{Binding ProgressStep, Converter={StaticResource StepToColorConverter}, ConverterParameter=5}" />
+                </HorizontalStackLayout>
+
+                <Button Text="Cancel"
+                        BackgroundColor="Transparent"
+                        TextColor="#8888A8"
+                        FontSize="14"
+                        Command="{Binding CancelGenerationCommand}"
+                        Margin="0,12,0,0" />
+
+            </VerticalStackLayout>
+        </Grid>
+
+    </AbsoluteLayout>
+</ContentPage>

@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EduPlay.ViewModels;
 
-namespace EduPlay.Views
+namespace EduPlay.Views;
+
+public partial class LibraryPage : ContentPage
 {
-    internal class LibraryPage
+    public LibraryPage(LibraryPageViewModel viewModel)
     {
+        InitializeComponent();
+        BindingContext = viewModel;
     }
 }

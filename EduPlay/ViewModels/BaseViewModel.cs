@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace EduPlay.ViewModels
+namespace EduPlay.ViewModels;
+public partial class BaseViewModel : ObservableObject
 {
-    internal class BaseViewModel
-    {
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+    private bool _isBusy;
+
+    [ObservableProperty]
+    private string _title = string.Empty;
+
+    public bool IsNotBusy => !IsBusy;
 }

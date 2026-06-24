@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="EduPlay.Views.GamePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:EduPlay.ViewModels"
+    x:DataType="vm:GamePageViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header bar -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#13131A"
+              Padding="12,8"
+              ColumnDefinitions="Auto,*,Auto">
+
+            <Button Grid.Column="0"
+                    Text="← Back"
+                    BackgroundColor="Transparent"
+                    TextColor="#7C5CFF"
+                    FontSize="16"
+                    Command="{Binding GoBackCommand}"
+                    Padding="0" />
+
+            <Label Grid.Column="1"
+                   Text="Your Game"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+
+            <Button Grid.Column="2"
+                    Text="Share"
+                    BackgroundColor="Transparent"
+                    TextColor="#4ECDC4"
+                    FontSize="16"
+                    Command="{Binding ShareGameCommand}"
+                    Padding="0" />
+        </Grid>
+
+        <!-- WebView game container -->
+        <Grid Grid.Row="1">
+
+            <!-- Loading indicator -->
+            <VerticalStackLayout
+                IsVisible="{Binding IsWebViewLoading}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Spacing="12">
+                <ActivityIndicator IsRunning="True" Color="#7C5CFF" />
+                <Label Text="Loading game..." TextColor="#8888A8" FontSize="13" />
+            </VerticalStackLayout>
+
+            <!-- The game WebView -->
+            <WebView
+                x:Name="GameWebView"
+                Source="{Binding GameUrl}"
+                Navigated="OnWebViewNavigated"
+                BackgroundColor="Black" />
+
+        </Grid>
+
+    </Grid>
+</ContentPage>
