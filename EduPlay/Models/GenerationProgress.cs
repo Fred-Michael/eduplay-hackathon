@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace EduPlay.Models;
 
-namespace EduPlay.Models
-{
-    internal class GenerationProgress
-    {
-    }
-}
+public record GenerationProgress(int Step, string label);
