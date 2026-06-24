@@ -1,10 +1,13 @@
-﻿namespace EduPlay
+﻿using EduPlay.Views;
+
+namespace EduPlay;
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+
+        // Register routes for navigation
+        Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
     }
 }
